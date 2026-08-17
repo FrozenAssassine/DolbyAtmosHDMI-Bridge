@@ -56,6 +56,7 @@ This tool captures the multi-channel output from a virtual audio cable and maps 
 2. Select your layout profile from the menu (`1` to `4`).
 3. Press play in DaVinci Resolve. Your AVR will decode native **Dolby Atmos** and route the height signals directly to your ceiling speakers.
 
+---
 
 # How it works in detail
 
