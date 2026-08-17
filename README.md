@@ -55,3 +55,51 @@ This tool captures the multi-channel output from a virtual audio cable and maps 
 1. Launch the compiled `SpatialAudioBridge.exe`.
 2. Select your layout profile from the menu (`1` to `4`).
 3. Press play in DaVinci Resolve. Your AVR will decode native **Dolby Atmos** and route the height signals directly to your ceiling speakers.
+
+
+
+```mermaid
+flowchart TD
+    subgraph Source ["Audio Source"]
+        DR["DaVinci Resolve / DAW"]
+    end
+
+    subgraph VirtualLayer ["Virtual Audio Layer"]
+        VC["VB-Audio Virtual Cable<br/>(8 to 12 Channels)"]
+    end
+
+    subgraph Bridge ["AtmosBridge (C++ Tool)"]
+        CAP["WASAPI Loopback Capture"]
+        FIFO["Lock-Free Ring Buffer"]
+        DEMUX["Channel Demuxer & Mapping"]
+        
+        CAP --> FIFO --> DEMUX
+    end
+
+    subgraph WindowsAudio ["Windows Spatial Audio Subsystem"]
+        SAC["ISpatialAudioClient<br/>(Static Bed + Height Objects)"]
+        ENC["Dolby MAT Real-time Encoder"]
+        
+        SAC --> ENC
+    end
+
+    subgraph Hardware ["Hardware Output"]
+        HDMI["HDMI Out (NVIDIA / AMD / Intel)"]
+        AVR["Denon AVR / Atmos Receiver<br/>(Decodes Dolby Atmos)"]
+        
+        subgraph Speakers ["Speaker Output"]
+            BED["5.1 / 7.1 Bed Speakers"]
+            HEIGHTS["Top Height / Ceiling Speakers<br/>(Ch 7 & 8 / 9 & 10)"]
+        end
+    end
+
+    DR -->|"Multi-channel LPCM"| VC
+    VC -->|"Raw PCM Frames"| CAP
+    
+    DEMUX -->|"Bed Channels (1-6)"| SAC
+    DEMUX -->|"Discrete Heights (7+)"| SAC
+    
+    ENC -->|"Dolby Atmos Bitstream"| HDMI
+    HDMI -->|"HDMI Stream"| AVR
+    AVR --> BED
+    AVR --> HEIGHTS
