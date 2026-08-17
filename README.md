@@ -2,6 +2,14 @@
 
 A lightweight real-time audio bridge for Windows that maps multi-channel audio from DaVinci Resolve (or any DAW) to discrete Dolby Atmos bed and height channels over HDMI.
 
+### The Problem
+
+Standard uncompressed multi-channel LPCM over HDMI lacks metadata for discrete 3D height channels. When sending 8+ channel audio from a DAW (like DaVinci Resolve Fairlight) to an AV receiver, channels 7 and 8 are routed to conventional surround/back speakers instead of ceiling height speakers.
+
+### The Solution
+
+This tool captures the multi-channel output from a virtual audio cable and maps the height tracks directly into the Windows Spatial Audio API (ISpatialAudioClient). Windows automatically encodes the stream into real-time Dolby MAT (Dolby Atmos) over HDMI, allowing your AV receiver to address physical top/height speakers discretely with low latency.
+
 ---
 
 ## Supported Speaker Configurations
@@ -31,7 +39,7 @@ A lightweight real-time audio bridge for Windows that maps multi-channel audio f
 ### 1. Windows Setup
 
 1. Open Windows Sound Settings $\rightarrow$ Right-click your HDMI / AVR Device $\rightarrow$ **Spatial Sound** $\rightarrow$ Select **Dolby Atmos for Home Theater**.
-2. If using more than 8 channels (5.1.4 or 7.1.4), install **VB-Audio Hi-Fi Cable** or **16-Channel Cable**.
+2. If using more than 8 channels (5.1.4 or 7.1.4), [install](https://vb-audio.com/Cable/) **VB-Audio Hi-Fi Cable** or **16-Channel Cable**. 
 
 ### 2. DaVinci Resolve Setup
 
